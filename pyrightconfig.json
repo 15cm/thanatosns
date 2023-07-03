@@ -1,0 +1,10 @@
+{
+    "executionEnvironments": [{
+        "root": "thanatosns",
+        "pythonVersion": "3.10.11",
+        "pythonPlatform": "Linux",
+        "extraPaths": [
+            "__pypackages__/3.10/lib"
+        ]
+    }]
+}
