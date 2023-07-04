@@ -1,6 +1,6 @@
 from typing import Optional
 from django.db.models.query import Prefetch
-from ninja import NinjaAPI
+from ninja import Router
 from ninja import ModelSchema, Query
 from django.db import transaction
 from ninja import FilterSchema, Field
@@ -10,7 +10,7 @@ from posts.models import Author, Media, MediaContentTypeChoices, Post
 from django.shortcuts import get_object_or_404
 
 
-api = NinjaAPI()
+router = Router()
 
 
 class AuthorIn(ModelSchema):
@@ -59,7 +59,7 @@ class PostOut(ModelSchema):
         model_exclude = ["authors"]
 
 
-@api.post("/posts")
+@router.post("/")
 def create_post(request, payload: PostIn):
     payload_dict = payload.dict()
     media_payloads = payload_dict.pop("medias")
@@ -74,7 +74,7 @@ def create_post(request, payload: PostIn):
     return {"url": post.url}
 
 
-@api.get("/posts/{post_id}", response=PostOut)
+@router.get("/{post_id}", response=PostOut)
 def get_post(request, post_id: int):
     return get_object_or_404(
         Post.objects.prefetch_related(
@@ -92,14 +92,14 @@ class PostFilterSchema(FilterSchema):
     author_name: Optional[str] = Field(q=["authors__name__icontains"])
 
 
-@api.get("/posts", response=list[PostOut])
+@router.get("/", response=list[PostOut])
 @paginate
 def list_post(request, filters: PostFilterSchema = Query(...)):
     posts = Post.objects.all()
     return filters.filter(posts)
 
 
-@api.delete("/posts/{post_id}")
+@router.delete("/{post_id}")
 def delete_post(request, post_id: int):
     get_object_or_404(Post, id=post_id).delete()
     return {"success": True}
