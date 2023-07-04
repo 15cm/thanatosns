@@ -37,3 +37,8 @@ def create_post(request, payload: PostIn):
         (author, _) = Author.objects.get_or_create(name=author_payload["name"])
         post.authors.add(author)
     return {"url": post.url}
+
+
+@api.get("/posts/{post_id}")
+def get_post(request, post_id: int):
+    pass
