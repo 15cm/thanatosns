@@ -14,7 +14,7 @@ class Post(models.Model):
     body = models.TextField()
     published_at = models.DateTimeField()
     # one to many -> Media
-    authors = models.ManyToManyField("Author")
+    authors = models.ManyToManyField("Author", related_name="posts")
 
 
 class MediaContentTypeChoices(TextChoices):
@@ -28,7 +28,7 @@ class Media(models.Model):
     content_type = models.CharField(
         max_length=63, choices=MediaContentTypeChoices.choices
     )
-    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="medias")
 
     class Meta:
         unique_together = ("url", "index")
