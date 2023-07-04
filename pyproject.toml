@@ -19,3 +19,8 @@ dev = [
     "django-stubs>=4.2.3",
     "django-extensions>=3.2.3",
 ]
+test = [
+    "pytest>=7.4.0",
+    "pytest-dotenv>=0.5.2",
+    "pytest-django>=4.5.2",
+]

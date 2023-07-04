@@ -16,7 +16,7 @@ router = Router()
 class AuthorIn(ModelSchema):
     class Config:
         model = Author
-        model_fields = ["name"]
+        model_exclude = ["id", "other_names", "urls"]
 
 
 class MediaIn(ModelSchema):
@@ -24,7 +24,7 @@ class MediaIn(ModelSchema):
 
     class Config:
         model = Media
-        model_exclude = ["post"]
+        model_exclude = ["id", "post"]
 
 
 class PostIn(ModelSchema):
@@ -33,13 +33,13 @@ class PostIn(ModelSchema):
 
     class Config:
         model = Post
-        model_exclude = ["authors"]
+        model_exclude = ["id", "authors"]
 
 
 class AuthorOut(ModelSchema):
     class Config:
         model = Author
-        model_fields = ["name"]
+        model_exclude = ["other_names", "urls"]
 
 
 class MediaOut(ModelSchema):
@@ -71,7 +71,7 @@ def create_post(request, payload: PostIn):
         for author_payload in author_payloads:
             (author, _) = Author.objects.get_or_create(name=author_payload["name"])
             post.authors.add(author)
-    return {"url": post.url}
+    return {"id": post.id}
 
 
 @router.get("/{post_id}", response=PostOut)
