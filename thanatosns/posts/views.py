@@ -1,7 +1,10 @@
+from typing import Optional
 from django.db.models.query import Prefetch
 from ninja import NinjaAPI
-from ninja import ModelSchema
+from ninja import ModelSchema, Query
 from django.db import transaction
+from ninja import FilterSchema, Field
+from ninja.pagination import paginate
 
 from posts.models import Author, Media, MediaContentTypeChoices, Post
 from django.shortcuts import get_object_or_404
@@ -80,3 +83,17 @@ def get_post(request, post_id: int):
         ),
         id=post_id,
     )
+
+
+class PostFilterSchema(FilterSchema):
+    url: Optional[str]
+    platform: Optional[str]
+    search: Optional[str] = Field(q=["title__icontains", "body__icontains"])
+    author_name: Optional[str] = Field(q=["authors__name__icontains"])
+
+
+@api.get("/posts", response=list[PostOut])
+@paginate
+def list_post(request, filters: PostFilterSchema = Query(...)):
+    posts = Post.objects.all()
+    return filters.filter(posts)
