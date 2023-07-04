@@ -21,4 +21,4 @@ DATABASES = {
     }
 }
 
-INSTALLED_APPS += ["django_extensions"]
+INSTALLED_APPS = ["daphne"] + INSTALLED_APPS + ["django_extensions"]

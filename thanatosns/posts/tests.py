@@ -23,7 +23,12 @@ def payload():
                 "url": "https://pbs.twimg.com/media/1",
                 "index": 0,
                 "content_type": "IMAGE",
-            }
+            },
+            {
+                "url": "https://pbs.twimg.com/media/2",
+                "index": 1,
+                "content_type": "IMAGE",
+            },
         ],
         "authors": [{"name": "John"}],
     }
@@ -50,7 +55,13 @@ def test_create_and_get(client: TestClient, payload):
                 "url": "https://pbs.twimg.com/media/1",
                 "index": 0,
                 "content_type": "IMAGE",
-            }
+            },
+            {
+                "id": 2,
+                "url": "https://pbs.twimg.com/media/2",
+                "index": 1,
+                "content_type": "IMAGE",
+            },
         ],
         "authors": [{"id": 1, "name": "John"}],
     }
@@ -80,7 +91,13 @@ def test_create_and_list(client: TestClient, payload):
                         "url": "https://pbs.twimg.com/media/1",
                         "index": 0,
                         "content_type": "IMAGE",
-                    }
+                    },
+                    {
+                        "id": 2,
+                        "url": "https://pbs.twimg.com/media/2",
+                        "index": 1,
+                        "content_type": "IMAGE",
+                    },
                 ],
                 "authors": [{"id": 1, "name": "John"}],
             }
@@ -112,7 +129,13 @@ def test_create_and_list_filter_found(client: TestClient, payload):
                         "url": "https://pbs.twimg.com/media/1",
                         "index": 0,
                         "content_type": "IMAGE",
-                    }
+                    },
+                    {
+                        "id": 2,
+                        "url": "https://pbs.twimg.com/media/2",
+                        "index": 1,
+                        "content_type": "IMAGE",
+                    },
                 ],
                 "authors": [{"id": 1, "name": "John"}],
             }

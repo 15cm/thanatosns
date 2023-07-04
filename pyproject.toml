@@ -18,6 +18,7 @@ license = {text = "MIT"}
 dev = [
     "django-stubs>=4.2.3",
     "django-extensions>=3.2.3",
+    "daphne>=4.0.0",
 ]
 test = [
     "pytest>=7.4.0",

@@ -74,13 +74,17 @@ def create_post(request, payload: PostIn):
     return {"id": post.id}
 
 
+def post_relationship_prefetches() -> list[Prefetch]:
+    return [
+        Prefetch("medias", queryset=Media.objects.order_by("index")),
+        Prefetch("authors", queryset=Author.objects.order_by("name")),
+    ]
+
+
 @router.get("/{post_id}", response=PostOut)
 def get_post(request, post_id: int):
     return get_object_or_404(
-        Post.objects.prefetch_related(
-            Prefetch("medias", queryset=Media.objects.order_by("index")),
-            Prefetch("authors", queryset=Author.objects.order_by("name")),
-        ),
+        Post.objects.prefetch_related(post_relationship_prefetches()),
         id=post_id,
     )
 
@@ -95,8 +99,8 @@ class PostFilterSchema(FilterSchema):
 @router.get("/", response=list[PostOut])
 @paginate
 def list_post(request, filters: PostFilterSchema = Query(...)):
-    posts = Post.objects.all()
-    return filters.filter(posts)
+    q = filters.get_filter_expression()
+    return Post.objects.prefetch_related(post_relationship_prefetches()).filter(q)
 
 
 @router.delete("/{post_id}")
