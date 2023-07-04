@@ -1,23 +1,31 @@
 from ninja import NinjaAPI
-from ninja.schema import Schema
+from ninja import ModelSchema
 from datetime import datetime
 
-from posts.models import Author, Post
+from posts.models import Author, Media, Post
 
 api = NinjaAPI()
 
 
-class AuthorIn(Schema):
-    name: str
+class AuthorIn(ModelSchema):
+    class Config:
+        model = Author
+        model_fields = ["name"]
 
 
-class PostIn(Schema):
-    url: str
-    platform: str
-    title: str
-    body: str
-    published_at: datetime
+class MediaIn(ModelSchema):
+    class Config:
+        model = Media
+        model_exclude = ["post"]
+
+
+class PostIn(ModelSchema):
+    medias: list[MediaIn]
     authors: list[AuthorIn]
+
+    class Config:
+        model = Post
+        model_exclude = ["authors"]
 
 
 @api.post("/posts")

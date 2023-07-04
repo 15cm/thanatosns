@@ -23,7 +23,7 @@ class MediaContentTypeChoices(TextChoices):
 
 class Media(models.Model):
     url = models.CharField(max_length=255, primary_key=True)
-    index = models.IntegerField()
+    index = models.PositiveIntegerField()
     content_type = models.CharField(
         max_length=63, choices=MediaContentTypeChoices.choices
     )
