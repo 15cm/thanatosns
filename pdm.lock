@@ -22,6 +22,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "django-extensions"
+version = "3.2.3"
+requires_python = ">=3.6"
+summary = "Extensions for Django"
+dependencies = [
+    "Django>=3.2",
+]
+
+[[package]]
 name = "django-ninja"
 version = "0.22.2"
 requires_python = ">=3.7"
@@ -147,7 +156,7 @@ summary = "Provider of IANA time zone data"
 lock_version = "4.2"
 cross_platform = true
 groups = ["default", "dev"]
-content_hash = "sha256:0ced5314b6e93c775fffdb963a435b0c72a2b7ddf7b38f2f373ec0ac0e44fabe"
+content_hash = "sha256:86f1266fb70ed62f2cd008a6a6389bb32605f673279d6c132d7238a0f8b0994e"
 
 [metadata.files]
 "asgiref 3.7.2" = [
@@ -157,6 +166,10 @@ content_hash = "sha256:0ced5314b6e93c775fffdb963a435b0c72a2b7ddf7b38f2f373ec0ac0
 "django 4.2.2" = [
     {url = "https://files.pythonhosted.org/packages/5c/fa/427fbcac5633f4b88fda7953efb04db903ca7e6d9486afdbda525c4006cc/Django-4.2.2.tar.gz", hash = "sha256:2a6b6fbff5b59dd07bef10bcb019bee2ea97a30b2a656d51346596724324badf"},
     {url = "https://files.pythonhosted.org/packages/ba/f3/7a66888bda4017198a692887bd566123732783073c1fd424db15358525fd/Django-4.2.2-py3-none-any.whl", hash = "sha256:672b3fa81e1f853bb58be1b51754108ab4ffa12a77c06db86aa8df9ed0c46fe5"},
+]
+"django-extensions 3.2.3" = [
+    {url = "https://files.pythonhosted.org/packages/8a/f1/318684c9466968bf9a9c221663128206e460c1a67f595055be4b284cde8a/django-extensions-3.2.3.tar.gz", hash = "sha256:44d27919d04e23b3f40231c4ab7af4e61ce832ef46d610cc650d53e68328410a"},
+    {url = "https://files.pythonhosted.org/packages/a7/7e/ba12b9660642663f5273141018d2bec0a1cae1711f4f6d1093920e157946/django_extensions-3.2.3-py3-none-any.whl", hash = "sha256:9600b7562f79a92cbf1fde6403c04fee314608fefbb595502e34383ae8203401"},
 ]
 "django-ninja 0.22.2" = [
     {url = "https://files.pythonhosted.org/packages/7c/8d/83bddc25896585c4de7a6640372ea35bb9b1ce9c9e6260a1ce8ad622dfb4/django_ninja-0.22.2-py3-none-any.whl", hash = "sha256:c53b098a8190f373ea2605c276a6061d48b2626500a9c6b9916c503e4b4a20eb"},

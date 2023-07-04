@@ -17,4 +17,5 @@ license = {text = "MIT"}
 [tool.pdm.dev-dependencies]
 dev = [
     "django-stubs>=4.2.3",
+    "django-extensions>=3.2.3",
 ]
