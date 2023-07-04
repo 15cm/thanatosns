@@ -5,12 +5,18 @@ from ninja import ModelSchema, Query
 from django.db import transaction
 from ninja import FilterSchema, Field
 from ninja.pagination import paginate
+from asgiref.sync import sync_to_async
 
 from posts.models import Author, Media, MediaContentTypeChoices, Post
 from django.shortcuts import get_object_or_404
 
 
 router = Router()
+
+
+@sync_to_async
+def aget_object_or_404(*kargs, **kwargs):
+    return get_object_or_404(*kargs, **kwargs)
 
 
 class AuthorIn(ModelSchema):
@@ -60,17 +66,23 @@ class PostOut(ModelSchema):
 
 
 @router.post("/")
-def create_post(request, payload: PostIn):
+async def create_post(request, payload: PostIn):
     payload_dict = payload.dict()
     media_payloads = payload_dict.pop("medias")
     author_payloads = payload_dict.pop("authors")
-    post = Post.objects.create(**payload_dict)
-    with transaction.atomic():
+
+    @sync_to_async
+    @transaction.atomic()
+    def create_object() -> Post:
+        post = Post.objects.create(**payload_dict)
         for media_payload in media_payloads:
             media = Media.objects.create(**media_payload, post=post)
         for author_payload in author_payloads:
             (author, _) = Author.objects.get_or_create(name=author_payload["name"])
             post.authors.add(author)
+        return post
+
+    post = await create_object()
     return {"id": post.id}
 
 
@@ -82,9 +94,9 @@ def post_relationship_prefetches() -> list[Prefetch]:
 
 
 @router.get("/{post_id}", response=PostOut)
-def get_post(request, post_id: int):
-    return get_object_or_404(
-        Post.objects.prefetch_related(post_relationship_prefetches()),
+async def get_post(request, post_id: int):
+    return await aget_object_or_404(
+        Post.objects.prefetch_related(*post_relationship_prefetches()),
         id=post_id,
     )
 
@@ -100,12 +112,12 @@ class PostFilterSchema(FilterSchema):
 @paginate
 def list_post(request, filters: PostFilterSchema = Query(...)):
     q = filters.get_filter_expression()
-    return Post.objects.prefetch_related(post_relationship_prefetches()).filter(q)
+    return Post.objects.prefetch_related(*post_relationship_prefetches()).filter(q)
 
 
 @router.delete("/{post_id}")
-def delete_post(request, post_id: int):
-    get_object_or_404(Post, id=post_id).delete()
+async def delete_post(request, post_id: int):
+    await Post.objects.filter(id=post_id).adelete()
     return {"success": True}
 
 

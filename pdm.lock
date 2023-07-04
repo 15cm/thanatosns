@@ -77,6 +77,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "decorator"
+version = "5.1.1"
+requires_python = ">=3.5"
+summary = "Decorators for Humans"
+
+[[package]]
 name = "django"
 version = "4.2.2"
 requires_python = ">=3.8"
@@ -85,6 +91,15 @@ dependencies = [
     "asgiref<4,>=3.6.0",
     "sqlparse>=0.3.1",
     "tzdata; sys_platform == \"win32\"",
+]
+
+[[package]]
+name = "django-annoying"
+version = "0.10.6"
+summary = "This is a django application that tries to eliminate annoying things in the Django framework."
+dependencies = [
+    "Django>=1.11",
+    "six",
 ]
 
 [[package]]
@@ -407,7 +422,7 @@ dependencies = [
 lock_version = "4.2"
 cross_platform = true
 groups = ["default", "dev", "test"]
-content_hash = "sha256:c6ccffe5ec6cb1745a5e59583ebf7deeaa2327b86e3ef174e9cdecf473c88000"
+content_hash = "sha256:ac4537036a75c2d3c5ea4346c240002332c84b5a7138f14e2142db4eb8bd79d0"
 
 [metadata.files]
 "asgiref 3.7.2" = [
@@ -524,9 +539,17 @@ content_hash = "sha256:c6ccffe5ec6cb1745a5e59583ebf7deeaa2327b86e3ef174e9cdecf47
     {url = "https://files.pythonhosted.org/packages/04/f6/86145f59db1b19e2d1c6a1a4981c7923b7fb3136f2461d4378c9047f2efa/daphne-4.0.0-py3-none-any.whl", hash = "sha256:a288ece46012b6b719c37150be67c69ebfca0793a8521bf821533bad983179b2"},
     {url = "https://files.pythonhosted.org/packages/d7/77/57b19d5caabf8537879aa4cf3a017b99d0b727f2521ffca7fd9140573509/daphne-4.0.0.tar.gz", hash = "sha256:cce9afc8f49a4f15d4270b8cfb0e0fe811b770a5cc795474e97e4da287497666"},
 ]
+"decorator 5.1.1" = [
+    {url = "https://files.pythonhosted.org/packages/66/0c/8d907af351aa16b42caae42f9d6aa37b900c67308052d10fdce809f8d952/decorator-5.1.1.tar.gz", hash = "sha256:637996211036b6385ef91435e4fae22989472f9d571faba8927ba8253acbc330"},
+    {url = "https://files.pythonhosted.org/packages/d5/50/83c593b07763e1161326b3b8c6686f0f4b0f24d5526546bee538c89837d6/decorator-5.1.1-py3-none-any.whl", hash = "sha256:b8c3f85900b9dc423225913c5aace94729fe1fa9763b38939a95226f02d37186"},
+]
 "django 4.2.2" = [
     {url = "https://files.pythonhosted.org/packages/5c/fa/427fbcac5633f4b88fda7953efb04db903ca7e6d9486afdbda525c4006cc/Django-4.2.2.tar.gz", hash = "sha256:2a6b6fbff5b59dd07bef10bcb019bee2ea97a30b2a656d51346596724324badf"},
     {url = "https://files.pythonhosted.org/packages/ba/f3/7a66888bda4017198a692887bd566123732783073c1fd424db15358525fd/Django-4.2.2-py3-none-any.whl", hash = "sha256:672b3fa81e1f853bb58be1b51754108ab4ffa12a77c06db86aa8df9ed0c46fe5"},
+]
+"django-annoying 0.10.6" = [
+    {url = "https://files.pythonhosted.org/packages/38/56/a347666a12aca588f8a689a56edee0930c295662f166b3f4f1775c7c91c3/django_annoying-0.10.6-py2.py3-none-any.whl", hash = "sha256:e230f28fec0559b4fdb621ff202068a78170ada2ac1ec7a73ba822cc1f737791"},
+    {url = "https://files.pythonhosted.org/packages/c7/1a/253fb9c0779de1b6ae631c8c4f50aa8187518d5e87a7ca87a0ad1ccf3d9f/django-annoying-0.10.6.tar.gz", hash = "sha256:083b5e26f140f86178fcb47931f69b7ff75181ccd1e318d9c218ae9babc1805e"},
 ]
 "django-extensions 3.2.3" = [
     {url = "https://files.pythonhosted.org/packages/8a/f1/318684c9466968bf9a9c221663128206e460c1a67f595055be4b284cde8a/django-extensions-3.2.3.tar.gz", hash = "sha256:44d27919d04e23b3f40231c4ab7af4e61ce832ef46d610cc650d53e68328410a"},

@@ -10,6 +10,7 @@ dependencies = [
     "django>=4.2.2",
     "django-ninja>=0.22.2",
     "psycopg[binary]>=3.1.9",
+    "django-annoying>=0.10.6",
 ]
 requires-python = ">=3.10"
 license = {text = "MIT"}
@@ -24,4 +25,5 @@ test = [
     "pytest>=7.4.0",
     "pytest-dotenv>=0.5.2",
     "pytest-django>=4.5.2",
+    "decorator>=5.1.1",
 ]
