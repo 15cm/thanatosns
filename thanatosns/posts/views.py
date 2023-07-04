@@ -97,3 +97,12 @@ class PostFilterSchema(FilterSchema):
 def list_post(request, filters: PostFilterSchema = Query(...)):
     posts = Post.objects.all()
     return filters.filter(posts)
+
+
+@api.delete("/posts/{post_id}")
+def delete_post(request, post_id: int):
+    get_object_or_404(Post, id=post_id).delete()
+    return {"success": True}
+
+
+# TODO: support updating posts
