@@ -12,7 +12,7 @@ class Post(models.Model):
     platform = models.CharField(max_length=255)
     title = models.TextField()
     body = models.TextField()
-    published_at = models.DateTimeField()
+    published_at = models.DateTimeField(null=True, blank=True)
     # one to many -> Media
     authors = models.ManyToManyField("Author", related_name="posts")
 

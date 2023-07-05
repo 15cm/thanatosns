@@ -1,3 +1,5 @@
 from django.contrib import admin
 
-# Register your models here.
+from exporters.models import PostExportStatus
+
+admin.site.register(PostExportStatus)

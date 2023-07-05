@@ -1,3 +1,10 @@
-from django.shortcuts import render
+from ninja import Router
+from .tasks import export_medias_task
 
-# Create your views here.
+router = Router()
+
+
+@router.post("/medias")
+def create_media_export(request):
+    export_medias_task.delay()  # type: ignore
+    return {"success": True}
