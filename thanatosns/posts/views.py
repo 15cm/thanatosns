@@ -12,6 +12,8 @@ from django.shortcuts import get_object_or_404
 
 
 router = Router()
+async_router = Router()
+routers = [router, async_router]
 
 
 @sync_to_async
@@ -65,7 +67,7 @@ class PostOut(ModelSchema):
         model_exclude = ["authors"]
 
 
-@router.post("/")
+@async_router.post("/")
 async def create_post(request, payload: PostIn):
     payload_dict = payload.dict()
     media_payloads = payload_dict.pop("medias")
@@ -93,7 +95,7 @@ def post_relationship_prefetches() -> list[Prefetch]:
     ]
 
 
-@router.get("/{post_id}", response=PostOut)
+@async_router.get("/{post_id}", response=PostOut)
 async def get_post(request, post_id: int):
     return await aget_object_or_404(
         Post.objects.prefetch_related(*post_relationship_prefetches()),
@@ -109,13 +111,14 @@ class PostFilterSchema(FilterSchema):
 
 
 @router.get("/", response=list[PostOut])
+# Paginate support is not ready for async yet. See https://github.com/vitalik/django-ninja/issues/547
 @paginate
 def list_post(request, filters: PostFilterSchema = Query(...)):
     q = filters.get_filter_expression()
     return Post.objects.prefetch_related(*post_relationship_prefetches()).filter(q)
 
 
-@router.delete("/{post_id}")
+@async_router.delete("/{post_id}")
 async def delete_post(request, post_id: int):
     await Post.objects.filter(id=post_id).adelete()
     return {"success": True}

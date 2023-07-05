@@ -3,7 +3,7 @@ import copy
 from urllib.parse import urlencode
 from ninja.testing.client import TestClient
 from posts import models
-from posts.views import PostOut, router
+from posts.views import PostOut, router, async_router
 from django.db import models
 import pytest
 from ninja.testing.client import TestClient, TestAsyncClient
@@ -28,7 +28,7 @@ def client():
 
 @pytest.fixture
 def async_client():
-    return TestAsyncClient(router)
+    return TestAsyncClient(async_router)
 
 
 def filter_out_keys_from_dict(dict_in: dict[str, Any], keys: set[str]):
@@ -54,7 +54,6 @@ def merge_dict_to_model(payload: dict[str, Any], obj: models.Model):
         setattr(obj, attr, value)
 
 
-@sync_to_async
 @transaction.atomic()
 def create_post_from_model_payload(model_payload: dict[str, Any]):
     payload = copy.deepcopy(model_payload)
@@ -88,6 +87,10 @@ def create_post_from_model_payload(model_payload: dict[str, Any]):
             merge_dict_to_model(author_payload, author)
             author.save()
         author.posts.add(post)
+
+
+async def acreate_post_from_model_payload(*kargs, **kwargs):
+    return await sync_to_async(create_post_from_model_payload)(*kargs, **kwargs)
 
 
 @pytest.fixture
@@ -127,8 +130,8 @@ def post_create_payload_1(post_model_payload_1: dict[str, Any]):
     return filter_out_keys_from_dict(post_model_payload_1, {"id"})
 
 
-@pytest.mark.django_db(transaction=True, reset_sequences=True)
 @async_test
+@pytest.mark.django_db(transaction=True, reset_sequences=True)
 async def test_create(
     async_client: TestAsyncClient, post_model_payload_1, post_create_payload_1
 ):
@@ -140,21 +143,19 @@ async def test_create(
     ) == PostOut(**post_model_payload_1)
 
 
-@pytest.mark.django_db()
 @async_test
+@pytest.mark.django_db()
 async def test_get(async_client: TestAsyncClient, post_model_payload_1):
-    await create_post_from_model_payload(post_model_payload_1)
+    await acreate_post_from_model_payload(post_model_payload_1)
 
     get_repsonse = await async_client.get(f"/1")
     assert get_repsonse.status_code == 200
     assert get_repsonse.json() == post_model_payload_1
 
 
-@pytest.mark.django_db(transaction=True, reset_sequences=True)
-def test_list(client: TestClient, payload):
-    create_response = client.post(f"/", json=payload)
-    assert create_response.status_code == 200
-    assert create_response.json() == {"id": 1}
+@pytest.mark.django_db()
+def test_list(client: TestClient, post_model_payload_1):
+    create_post_from_model_payload(post_model_payload_1)
 
     list_repsonse = client.get(f"/")
     assert list_repsonse.status_code == 200
@@ -188,11 +189,9 @@ def test_list(client: TestClient, payload):
     }
 
 
-@pytest.mark.django_db(transaction=True, reset_sequences=True)
-def test_list_filter_found(client: TestClient, payload):
-    create_response = client.post(f"/", json=payload)
-    assert create_response.status_code == 200
-    assert create_response.json() == {"id": 1}
+@pytest.mark.django_db()
+def test_list_filter_found(client: TestClient, post_model_payload_1):
+    create_post_from_model_payload(post_model_payload_1)
 
     list_repsonse = client.get("/", request_params={"search": "hello"})
     assert list_repsonse.status_code == 200
@@ -226,11 +225,9 @@ def test_list_filter_found(client: TestClient, payload):
     }
 
 
-@pytest.mark.django_db(transaction=True, reset_sequences=True)
-def test_list_filter_not_found(client: TestClient, payload):
-    create_response = client.post(f"/", json=payload)
-    assert create_response.status_code == 200
-    assert create_response.json() == {"id": 1}
+@pytest.mark.django_db()
+def test_list_filter_not_found(client: TestClient, post_model_payload_1):
+    create_post_from_model_payload(post_model_payload_1)
 
     list_repsonse = client.get("/?" + urlencode({"search": "unmatched"}))
     assert list_repsonse.status_code == 200
@@ -240,10 +237,10 @@ def test_list_filter_not_found(client: TestClient, payload):
     }
 
 
-@pytest.mark.django_db()
 @async_test
+@pytest.mark.django_db()
 async def test_delete(async_client: TestAsyncClient, post_model_payload_1):
-    await create_post_from_model_payload(post_model_payload_1)
+    await acreate_post_from_model_payload(post_model_payload_1)
 
     delete_repsonse = await async_client.delete("/1")
     assert delete_repsonse.status_code == 200
