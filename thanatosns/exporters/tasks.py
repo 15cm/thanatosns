@@ -8,14 +8,24 @@ from datetime import datetime
 import logging
 from celery import Task
 from django.utils import timezone
+import time
+from threading import Timer
 
 logger = logging.getLogger(__name__)
 
 MEDIA_EXPORTER_ID = "media_exporter"
 
 
+# https://stackoverflow.com/a/48741004
+class RepeatTimer(Timer):
+    def run(self):
+        while not self.finished.wait(self.interval):
+            self.function(*self.args, **self.kwargs)
+
+
 # TODO: implement the export function.
 def export_medias(post: Post):
+    time.sleep(5)
     print(f"Exporting post {post.id}")
 
 

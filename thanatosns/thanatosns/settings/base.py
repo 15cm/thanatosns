@@ -1,8 +1,15 @@
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
+THANATOSNS_REDIS_URL = os.getenv("THANATOSNS_REDIS_URL", "redis://127.0.0.1:6379")
+THANATOSNS_POSTGRES_USER = os.getenv("THANATOSNS_POSTGRES_USER", "postgres")
+THANATOSNS_POSTGRES_PASSWORD = os.getenv("THANATOSNS_POSTGRES_PASSWORD", "postgres")
+THANATOSNS_POSTGRES_HOST = os.getenv("THANATOSNS_POSTGRES_HOST", "localhost")
+THANATOSNS_POSTGRES_PORT = os.getenv("THANATOSNS_POSTGRES_POST", "5432")
+THANATOSNS_POSTGRES_DB = os.getenv("THANATOSNS_POSTGRES_POST", "thanatosns")
 
 ALLOWED_HOSTS = []
 
@@ -90,6 +97,28 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 ASGI_APPLICATION = "thanatosns.asgi.application"
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": THANATOSNS_POSTGRES_DB,
+        "USER": THANATOSNS_POSTGRES_USER,
+        "PASSWORD": THANATOSNS_POSTGRES_PASSWORD,
+        "HOST": THANATOSNS_POSTGRES_HOST,
+        "PORT": THANATOSNS_POSTGRES_PORT,
+        "OPTIONS": {
+            # The default timeout of psql, added for modification as required.
+            "connect_timeout": 30
+        },
+    }
+}
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": f"{THANATOSNS_REDIS_URL}/0",
+    }
+}
 
 CELERY_TIMEZONE = "UTC"
 CELERY_TASK_TRACK_STARTED = True
