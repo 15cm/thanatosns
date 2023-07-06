@@ -3,7 +3,7 @@ import copy
 from urllib.parse import urlencode
 from ninja.testing.client import TestClient
 from posts import models
-from posts.views import PostOut, router, async_router
+from posts.views import PostOut, router
 from django.db import models
 import pytest
 from ninja.testing.client import TestClient, TestAsyncClient
@@ -23,12 +23,18 @@ def async_test(func):
 
 @pytest.fixture
 def client():
+    # A hack to make sync and async paths work together in a router for testing. The path operation object is shard for the same path.
+    for _, path_operation in router.path_operations.items():
+        path_operation.is_async = False
     return TestClient(router)
 
 
 @pytest.fixture
 def async_client():
-    return TestAsyncClient(async_router)
+    # A hack to make sync and async paths work together in a router for testing. The path operation object is shard for the same path.
+    for _, path_operation in router.path_operations.items():
+        path_operation.is_async = True
+    return TestAsyncClient(router)
 
 
 def filter_out_keys_from_dict(dict_in: dict[str, Any], keys: set[str]):
