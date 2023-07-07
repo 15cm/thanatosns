@@ -21,9 +21,11 @@ def export_medias_task_cleanup():
 def export_medias_task(self: Task, export_all: bool):
     with lease.refresh_lease_until_done(MEDIA_TASK_LEASE_NAME):
         media_exporter = MediaExporter(MEDIA_EXPORTER_ID, self)
-        posts_to_export = Post.objects.prefetch_related("export_status")
+        posts_to_export = Post.objects.prefetch_related(
+            "export_status"
+        ).prefetch_related("medias")
         if not export_all:
-            posts_to_export.filter(
+            posts_to_export = posts_to_export.filter(
                 Q(export_status__isnull=True)
                 | (
                     Q(export_status__exporter_id=MEDIA_EXPORTER_ID)

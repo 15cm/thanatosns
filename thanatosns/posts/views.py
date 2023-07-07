@@ -7,7 +7,7 @@ from ninja import FilterSchema, Field
 from ninja.pagination import paginate
 from asgiref.sync import sync_to_async
 
-from posts.models import Author, Media, MediaContentTypeChoices, Post
+from posts.models import Author, Media, Post
 from django.shortcuts import get_object_or_404
 
 
@@ -26,8 +26,6 @@ class AuthorIn(ModelSchema):
 
 
 class MediaIn(ModelSchema):
-    content_type: MediaContentTypeChoices
-
     class Config:
         model = Media
         model_exclude = ["id", "post"]
@@ -49,8 +47,6 @@ class AuthorOut(ModelSchema):
 
 
 class MediaOut(ModelSchema):
-    content_type: MediaContentTypeChoices
-
     class Config:
         model = Media
         model_exclude = ["post"]

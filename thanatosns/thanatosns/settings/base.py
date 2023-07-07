@@ -10,6 +10,11 @@ THANATOSNS_POSTGRES_PASSWORD = os.getenv("THANATOSNS_POSTGRES_PASSWORD", "postgr
 THANATOSNS_POSTGRES_HOST = os.getenv("THANATOSNS_POSTGRES_HOST", "localhost")
 THANATOSNS_POSTGRES_PORT = os.getenv("THANATOSNS_POSTGRES_POST", "5432")
 THANATOSNS_POSTGRES_DB = os.getenv("THANATOSNS_POSTGRES_DB", "thanatosns")
+THANATOSNS_EXPORT_DIR = os.getenv("THANATOSNS_EXPORT_DIR", "/tmp/thanatosns")
+THANATOSNS_MEDIA_CONTENT_TYPES = os.getenv(
+    "THANATOSNS_MEDIA_CONTENT_TYPES",
+    "image/jpeg,image/png,image/gif,image/webp,video/mpeg,video/mp4,video/webm",
+).split(",")
 
 ALLOWED_HOSTS = []
 
