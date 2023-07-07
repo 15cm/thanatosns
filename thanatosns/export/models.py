@@ -13,4 +13,8 @@ class PostExportStatus(models.Model):
 
     class Meta:
         verbose_name_plural = "Post export statuses"
-        unique_together = ("exporter_id", "post")
+        constraints = [
+            models.UniqueConstraint(
+                name="unique_exporter_per_post", fields=["exporter_id", "post"]
+            )
+        ]

@@ -2,7 +2,6 @@ from celery import shared_task
 from django.core.cache import cache
 from export.exporters.media_exporter import MediaExporter
 from posts.models import Post
-from .models import PostExportStatus
 from django.db.models import Q
 from celery import Task
 from . import lease
