@@ -1,8 +1,8 @@
 from ninja import NinjaAPI
 from posts.views import router as posts_router
-from exporters.views import router as exporters_router
+from export.views import router as export_router
 
 api = NinjaAPI()
 
 api.add_router("/posts/", posts_router)
-api.add_router("/exporters/", exporters_router)
+api.add_router("/export/", export_router)

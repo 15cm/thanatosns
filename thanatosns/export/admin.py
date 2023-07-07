@@ -1,5 +1,5 @@
 from django.contrib import admin
 
-from exporters.models import PostExportStatus
+from export.models import PostExportStatus
 
 admin.site.register(PostExportStatus)

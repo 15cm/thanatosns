@@ -42,9 +42,11 @@ def start_media_export(request, payload: StartMediaExportIn):
 
 @router.delete("/media/{task_id}", response={200: DetailResponse, 404: DetailResponse})
 def delete_media_export(request, task_id: str):
-    if task_id := cache.get(MEDIA_TASK_ID_NAME, None):
+    if (task_id := cache.get(MEDIA_TASK_ID_NAME, None)) and lease.is_valid(
+        MEDIA_TASK_LEASE_NAME
+    ):
         celery_app.control.revoke(task_id, terminate=True)
         export_medias_task_cleanup()
         return DetailResponse(detail=f"Succeeded.")
     else:
-        return 404, DetailResponse(detail="Task not found.")
+        return 404, DetailResponse(detail="Task not found or its lease expired.")

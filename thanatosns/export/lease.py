@@ -24,17 +24,21 @@ def _renew(
     cache.set(lease_name, at_seconds + extend_seconds)
 
 
+def is_valid(lease_name: str) -> bool:
+    now = time.time()
+    lease_expiration = cache.get(lease_name, 0)
+    return now < lease_expiration
+
+
 def stop(lease_name: str):
     cache.set(lease_name, 0)
 
 
 def acquire(lease_name: str) -> bool:
-    now = time.time()
-    lease_expiration = cache.get(lease_name, 0)
-    if now < lease_expiration:
+    if is_valid(lease_name):
         return False
     else:
-        _renew(lease_name, extend_seconds=LEASE_RENEW_INTERVAL_SECONDS, at_seconds=now)
+        _renew(lease_name, extend_seconds=LEASE_RENEW_INTERVAL_SECONDS)
         return True
 
 
