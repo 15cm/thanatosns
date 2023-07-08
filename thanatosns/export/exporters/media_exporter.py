@@ -8,6 +8,7 @@ import celery
 from .base_exporter import BaseExporter
 from posts.models import Media, Post
 import requests
+from exiftool import ExifToolHelper
 
 MEDIA_EXPORTER_ID = "media_exporter"
 
@@ -18,6 +19,28 @@ class UnsupportedContentTypeException(Exception):
 
 class MediaProcessException(Exception):
     pass
+
+
+def _populate_exif(path: Path, post: Post):
+    with ExifToolHelper() as et:
+        et.set_tags(
+            [path],
+            tags={
+                "DateTimeOriginal": post.published_at.strftime("%Y:%m:%d %H:%M:%S%z"),
+                "Title": post.title,
+                "Subject": post.platform,
+                "Description": post.body,
+                "UserComment": post.url,
+            }
+            | ({"Artist": post.author} if post.author else {}),
+            params=[
+                "-P",
+                "-overwrite_original",
+                "-codedcharacterset=utf8",
+                "-charset",
+                "iptc=UTF8",
+            ],
+        )
 
 
 class MediaExporter(BaseExporter):
@@ -45,6 +68,7 @@ class MediaExporter(BaseExporter):
                 media_path = post_dir / f"media_{media.index}_id_{media.id}{extension}"
                 with open(media_path, "wb") as f:
                     f.write(response.content)
+                _populate_exif(media_path, post)
             except Exception as e:
                 err_urls.append(media.url)
                 last_exception = e
