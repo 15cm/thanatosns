@@ -12,8 +12,10 @@ class Post(models.Model):
     title = models.TextField()
     body = models.TextField()
     published_at = models.DateTimeField(null=True, blank=True)
-    # one to many -> Media
-    authors = models.ManyToManyField("Author", related_name="posts")
+    # An author should only be null when the author is explicitly deleted.
+    author = models.ForeignKey(
+        "Author", related_name="posts", null=True, on_delete=models.SET_NULL
+    )
 
 
 class Media(models.Model):

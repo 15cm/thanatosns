@@ -381,6 +381,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "pyexiftool"
+version = "0.5.5"
+requires_python = ">=3.6"
+summary = "Python wrapper for exiftool"
+
+[[package]]
 name = "pyfakefs"
 version = "5.2.2"
 requires_python = ">=3.7"
@@ -600,7 +606,7 @@ dependencies = [
 lock_version = "4.2"
 cross_platform = true
 groups = ["default", "dev", "test"]
-content_hash = "sha256:bc3c67570ea7c3da44d31270e6ddbc0588221bfb3393c24bc5fdda4da901ac8c"
+content_hash = "sha256:718bf14ba8f59a229691c2de15254bacf681b333b69763df84612303abd73b48"
 
 [metadata.files]
 "amqp 5.1.1" = [
@@ -1035,6 +1041,10 @@ content_hash = "sha256:bc3c67570ea7c3da44d31270e6ddbc0588221bfb3393c24bc5fdda4da
     {url = "https://files.pythonhosted.org/packages/f1/79/e28edde4bca34e08958d02f14e45805c2b18110aa720cdb900022fc210f7/pydantic-1.10.11-cp39-cp39-musllinux_1_1_x86_64.whl", hash = "sha256:174899023337b9fc685ac8adaa7b047050616136ccd30e9070627c1aaab53a13"},
     {url = "https://files.pythonhosted.org/packages/f9/ba/19c03d48e76940b4970e9b9ac626d104e69f9ee2d67ec778f1142ce2f559/pydantic-1.10.11-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:08a6c32e1c3809fbc49debb96bf833164f3438b3696abf0fbeceb417d123e6eb"},
     {url = "https://files.pythonhosted.org/packages/fe/1b/266ef0137e71d3405762521db8c0a4a07d5883245b7abac9e800fef4729b/pydantic-1.10.11-cp39-cp39-musllinux_1_1_i686.whl", hash = "sha256:787cf23e5a0cde753f2eabac1b2e73ae3844eb873fd1f5bdbff3048d8dbb7604"},
+]
+"pyexiftool 0.5.5" = [
+    {url = "https://files.pythonhosted.org/packages/78/04/10ac8e25bfbfd6297194e1fefdeaba1cc981ae2f5a36dd03ba30db3bbee0/PyExifTool-0.5.5.tar.gz", hash = "sha256:9dce4638c1d4d1b3414eb4e720647582f2ec14e940f97e42d4ba202580e04a66"},
+    {url = "https://files.pythonhosted.org/packages/bd/fb/ffb698a0e3d8e1f45a051be009b6dd4494bd665b165ec28c594bb535cec7/PyExifTool-0.5.5-py3-none-any.whl", hash = "sha256:7048aab1cb83726d7bf0113a5acb9d9d52f9e16817e39595fa59c8ea0563bf5a"},
 ]
 "pyfakefs 5.2.2" = [
     {url = "https://files.pythonhosted.org/packages/95/9c/45f562160e01d30f8efa399b8eb96bfd0022e1d7e47797989e1981254721/pyfakefs-5.2.2-py3-none-any.whl", hash = "sha256:92913ad26f2661b81080178421f00aa712d799e18e4b5bb2fcba128f435dd6a7"},

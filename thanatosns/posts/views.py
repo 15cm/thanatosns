@@ -1,5 +1,5 @@
 from typing import Optional
-from django.db.models.query import Prefetch
+from django.db.models.query import Prefetch, QuerySet
 from ninja import Router
 from ninja import ModelSchema, Query
 from django.db import transaction
@@ -33,7 +33,7 @@ class MediaIn(ModelSchema):
 
 class PostIn(ModelSchema):
     medias: list[MediaIn]
-    authors: list[AuthorIn]
+    author: AuthorIn
 
     class Config:
         model = Post
@@ -54,7 +54,7 @@ class MediaOut(ModelSchema):
 
 class PostOut(ModelSchema):
     medias: list[MediaOut]
-    authors: list[AuthorOut]
+    author: Optional[AuthorOut]
 
     class Config:
         model = Post
@@ -65,7 +65,7 @@ class PostOut(ModelSchema):
 async def create_post(request, payload: PostIn):
     payload_dict = payload.dict()
     media_payloads = payload_dict.pop("medias")
-    author_payloads = payload_dict.pop("authors")
+    author_payload = payload_dict.pop("author")
 
     @sync_to_async
     @transaction.atomic()
@@ -73,26 +73,25 @@ async def create_post(request, payload: PostIn):
         post = Post.objects.create(**payload_dict)
         for media_payload in media_payloads:
             media = Media.objects.create(**media_payload, post=post)
-        for author_payload in author_payloads:
-            (author, _) = Author.objects.get_or_create(name=author_payload["name"])
-            post.authors.add(author)
+        (author, _) = Author.objects.get_or_create(name=author_payload["name"])
+        post.author = author
+        post.save()
         return post
 
     post = await create_object()
     return {"id": post.id}
 
 
-def post_relationship_prefetches() -> list[Prefetch]:
-    return [
-        Prefetch("medias", queryset=Media.objects.order_by("index")),
-        Prefetch("authors", queryset=Author.objects.order_by("name")),
-    ]
+def post_prefetch_relationships(qs: QuerySet[Post]) -> QuerySet[Post]:
+    return qs.select_related("author").prefetch_related(
+        Prefetch("medias", queryset=Media.objects.order_by("index"))
+    )
 
 
 @router.get("/{post_id}", response=PostOut)
 async def get_post(request, post_id: int):
     return await aget_object_or_404(
-        Post.objects.prefetch_related(*post_relationship_prefetches()),
+        post_prefetch_relationships(Post.objects.all()),
         id=post_id,
     )
 
@@ -115,7 +114,7 @@ async def delete_post(request, post_id: int):
 @paginate
 def list_post(request, filters: PostFilterSchema = Query(...)):
     q = filters.get_filter_expression()
-    return Post.objects.prefetch_related(*post_relationship_prefetches()).filter(q)
+    return post_prefetch_relationships(Post.objects.all()).filter(q)
 
 
 # TODO: support updating posts

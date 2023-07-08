@@ -8,8 +8,7 @@ import pytest
 from ninja.testing.client import TestClient, TestAsyncClient
 from asgiref.sync import sync_to_async, async_to_sync
 import decorator
-from posts.models import Post, Media, Author
-from annoying.functions import get_object_or_None
+from posts.models import Post
 from .test_utils import create_post_from_model_payload
 
 
@@ -80,12 +79,10 @@ def post_model_payload_1():
                 "index": 1,
             },
         ],
-        "authors": [
-            {
-                "id": 1,
-                "name": "John",
-            }
-        ],
+        "author": {
+            "id": 1,
+            "name": "John",
+        },
     }
 
 
@@ -129,7 +126,7 @@ async def test_create(
                     "index": 1,
                 },
             ],
-            "authors": [{"id": 1, "name": "John"}],
+            "author": {"id": 1, "name": "John"},
         }
     )
 
@@ -158,7 +155,7 @@ async def test_get(async_client: TestAsyncClient, post_1):
                 "index": 1,
             },
         ],
-        "authors": [{"id": 1, "name": "John"}],
+        "author": {"id": 1, "name": "John"},
     }
 
 
@@ -188,7 +185,7 @@ def test_list(client: TestClient, post_1):
                         "index": 1,
                     },
                 ],
-                "authors": [{"id": 1, "name": "John"}],
+                "author": {"id": 1, "name": "John"},
             }
         ],
     }
@@ -220,7 +217,7 @@ def test_list_filter_found(client: TestClient, post_1):
                         "index": 1,
                     },
                 ],
-                "authors": [{"id": 1, "name": "John"}],
+                "author": {"id": 1, "name": "John"},
             }
         ],
     }

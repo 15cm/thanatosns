@@ -49,12 +49,10 @@ def post_model_payload_1():
                 "index": 1,
             },
         ],
-        "authors": [
-            {
-                "id": 1,
-                "name": "John",
-            }
-        ],
+        "author": {
+            "id": 1,
+            "name": "John",
+        },
     }
 
 
