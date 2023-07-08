@@ -135,7 +135,7 @@ async def test_create(
 
 
 @async_test
-@pytest.mark.django_db()
+@pytest.mark.django_db
 async def test_get(async_client: TestAsyncClient, post_1):
     get_repsonse = await async_client.get(f"/1")
     assert get_repsonse.status_code == 200
@@ -162,7 +162,7 @@ async def test_get(async_client: TestAsyncClient, post_1):
     }
 
 
-@pytest.mark.django_db()
+@pytest.mark.django_db
 def test_list(client: TestClient, post_1):
     list_repsonse = client.get(f"/")
     assert list_repsonse.status_code == 200
@@ -194,7 +194,7 @@ def test_list(client: TestClient, post_1):
     }
 
 
-@pytest.mark.django_db()
+@pytest.mark.django_db
 def test_list_filter_found(client: TestClient, post_1):
     list_repsonse = client.get("/", request_params={"search": "hello"})
     assert list_repsonse.status_code == 200
@@ -226,7 +226,7 @@ def test_list_filter_found(client: TestClient, post_1):
     }
 
 
-@pytest.mark.django_db()
+@pytest.mark.django_db
 def test_list_filter_not_found(client: TestClient, post_1):
     list_repsonse = client.get("/?" + urlencode({"search": "unmatched"}))
     assert list_repsonse.status_code == 200
@@ -237,7 +237,7 @@ def test_list_filter_not_found(client: TestClient, post_1):
 
 
 @async_test
-@pytest.mark.django_db()
+@pytest.mark.django_db
 async def test_delete(async_client: TestAsyncClient, post_1):
     delete_repsonse = await async_client.delete("/1")
     assert delete_repsonse.status_code == 200

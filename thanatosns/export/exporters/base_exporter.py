@@ -1,8 +1,8 @@
 from abc import abstractmethod
 import os
 from pathlib import Path
+from typing import Iterable
 from django.conf import settings
-from django.db.models.query import QuerySet
 from django.utils import timezone
 import celery
 from export.models import PostExportStatus
@@ -34,21 +34,22 @@ class BaseExporter:
         self.task_state = ExportTaskState()
         self.root_dir = Path(settings.THANATOSNS_EXPORT_DIR) / self.exporter_id
 
-    def process(self, posts: QuerySet[Post]):
+    def process(self, posts: Iterable[Post]):
+        self.root_dir.mkdir(parents=True, exist_ok=True)
         if not os.access(self.root_dir, os.W_OK):
             raise PermissionError(f"No write access to {self.root_dir}")
         export_statuses = []
-        self.task_state.total_count = posts.count()
         for post in posts:
+            self.task_state.total_count += 1
             export_status: PostExportStatus
-            if post.export_status.all().count() == 0:
+            if post.export_statuses.all().count() == 0:
                 export_status = PostExportStatus.objects.create(
                     exporter_id=self.exporter_id,
                     is_exported=False,
                     post=post,
                 )
             else:
-                export_status = post.export_status.all()[0]
+                export_status = post.export_statuses.all()[0]
             try:
                 self._process_one(post)
             except Exception as e:

@@ -18,4 +18,5 @@ def create_post_from_model_payload(model_payload: dict[str, Any]) -> Post:
     for author_payload in author_payloads:
         author = Author.objects.create(**author_payload)
         author.posts.add(post)
-    return post
+    # Somehow the post object created above set the DatetimeField to a str object if we do not get it back from the database.
+    return Post.objects.get(id=post.id)

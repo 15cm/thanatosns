@@ -8,7 +8,7 @@ class PostExportStatus(models.Model):
     is_exported = models.BooleanField()
     exported_at = models.DateTimeField(null=True, blank=True)
     post = models.ForeignKey(
-        Post, on_delete=models.CASCADE, related_name="export_status"
+        Post, on_delete=models.CASCADE, related_name="export_statuses"
     )
 
     class Meta:
