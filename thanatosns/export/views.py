@@ -85,7 +85,8 @@ def delete_all_media_export_task(request):
     for insepct_result in [inspect.active(), inspect.reserved()]:
         for _, tasks in insepct_result.items():
             for task in tasks:
-                task_ids.append(task["id"])
+                if task.name == "export.tasks.export_medias_task":
+                    task_ids.append(task["id"])
     for task_id in task_ids:
         celery_app.control.revoke(task_id, terminate=True)
     return DetailResponse(detail=f"Succeeded. {len(task_ids)} deleted.")
