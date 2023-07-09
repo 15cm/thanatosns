@@ -1,8 +1,7 @@
-from os import listdir
 from pathlib import Path
 from unittest import mock
 from django.conf import settings
-import celery
+from export.exporters.base_exporter import ExportResult
 from export.exporters.media_exporter import MediaExporter, MEDIA_EXPORTER_ID
 from export.models import PostExportStatus
 from posts.models import Post
@@ -12,15 +11,8 @@ import requests_mock
 
 
 @pytest.fixture
-def mock_task():
-    task = celery.Task()
-    task.update_state = mock.MagicMock(return_value=None)
-    return task
-
-
-@pytest.fixture
-def media_exporter(fs_patched, mock_task):
-    return MediaExporter(mock_task)
+def media_exporter(fs_patched):
+    return MediaExporter(should_populate_exif=False)
 
 
 @pytest.fixture
@@ -101,10 +93,12 @@ def test_export(fs_patched, media_exporter: MediaExporter, post_1: Post):
             headers={"content-type": "image/png"},
             content=b"CONTENT",
         )
+        result: ExportResult
         try:
-            media_exporter.process([post_1])
+            result = media_exporter.export(post_1)
         except Exception as e:
             assert False, f"Should not raise exception {e}"
+    assert result.success
     assert Path(
         f"{settings.THANATOSNS_EXPORT_DIR}/{media_exporter.exporter_id}/2023/07/04/post_1/media_0_id_1.jpg"
     ).exists()

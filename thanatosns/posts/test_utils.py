@@ -19,4 +19,5 @@ def create_post_from_model_payload(model_payload: dict[str, Any]) -> Post:
         author = Author.objects.create(**author_payload)
         post.author = author
     post.save()
-    return post
+    # No idea why the object returned by `create` set the DatetimeField to a string.
+    return Post.objects.get(id=1)

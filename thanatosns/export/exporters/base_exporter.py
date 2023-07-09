@@ -16,7 +16,7 @@ import posts
 logger = logging.getLogger(__name__)
 
 
-class ProcessResult(Schema):
+class ExportResult(Schema):
     success: bool
     error_message: Optional[str]
 
@@ -34,7 +34,7 @@ class BaseExporter:
         if not os.access(self.root_dir, os.W_OK):
             error_message = f"No write access to {self.root_dir}"
             logger.error(error_message)
-            return ProcessResult(
+            return ExportResult(
                 success=False,
                 error_message=error_message,
             )
@@ -42,7 +42,7 @@ class BaseExporter:
             self._process(post)
         except Exception as e:
             logger.error(e)
-            return ProcessResult(success=False, error_message=str(e))
+            return ExportResult(success=False, error_message=str(e))
         export_statuses = list(post.export_statuses.all())
         export_status: PostExportStatus
         if len(export_statuses) == 0:
@@ -56,7 +56,7 @@ class BaseExporter:
         export_status.is_exported = True
         export_status.exported_at = timezone.now()
         export_status.save()
-        return ProcessResult(success=True)
+        return ExportResult(success=True)
 
     @abstractmethod
     def _process(self, post: Post):

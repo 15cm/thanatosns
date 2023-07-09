@@ -1,7 +1,7 @@
 from typing import Any, Iterable
 from celery import shared_task
 from django.core.cache import cache
-from export.exporters.base_exporter import ProcessResult
+from export.exporters.base_exporter import ExportResult
 from export.exporters.media_exporter import MediaExporter, MEDIA_EXPORTER_ID
 from posts.models import Post
 from django.db.models import Q

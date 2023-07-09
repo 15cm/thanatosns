@@ -1,4 +1,6 @@
 import mimetypes
+from shutil import which
+import os
 from pathlib import Path
 from typing import Optional
 
@@ -43,7 +45,10 @@ def _populate_exif(path: Path, post: Post):
 
 
 class MediaExporter(BaseExporter):
-    def __init__(self) -> None:
+    should_populate_exif: bool
+
+    def __init__(self, should_populate_exif=True) -> None:
+        self.should_populate_exif = should_populate_exif
         super().__init__(MEDIA_EXPORTER_ID)
 
     def _process(self, post: Post):
@@ -67,7 +72,8 @@ class MediaExporter(BaseExporter):
                 media_path = post_dir / f"media_{media.index}_id_{media.id}{extension}"
                 with open(media_path, "wb") as f:
                     f.write(response.content)
-                _populate_exif(media_path, post)
+                if self.should_populate_exif:
+                    _populate_exif(media_path, post)
             except Exception as e:
                 err_urls.append(media.url)
                 last_exception = e
