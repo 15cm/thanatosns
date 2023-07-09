@@ -34,6 +34,7 @@ class MediaIn(ModelSchema):
 class PostIn(ModelSchema):
     medias: list[MediaIn]
     author: AuthorIn
+    metadata: Optional[dict] = None
 
     class Config:
         model = Post
@@ -58,7 +59,7 @@ class PostOut(ModelSchema):
 
     class Config:
         model = Post
-        model_fields = "__all__"
+        model_exclude = ["metadata"]
 
 
 @router.post("/")

@@ -5,6 +5,17 @@ from django.contrib.postgres.fields import ArrayField
 from django.contrib.postgres.indexes import GinIndex
 
 
+class PostManager(models.Manager):
+    def get_queryset(self):
+        return (
+            super()
+            .get_queryset()
+            .defer(
+                "metadata",
+            )
+        )
+
+
 class Post(models.Model):
     url = models.CharField(max_length=255, unique=True)
     # The social platform of this post
@@ -12,10 +23,14 @@ class Post(models.Model):
     title = models.TextField()
     body = models.TextField()
     published_at = models.DateTimeField(null=True, blank=True)
+    # Any metadata of the post that is not supported for now.
+    metadata = models.JSONField(null=True, blank=True)
     # An author should only be null when the author is explicitly deleted.
     author = models.ForeignKey(
         "Author", related_name="posts", null=True, on_delete=models.SET_NULL
     )
+
+    objects = PostManager()
 
 
 class Media(models.Model):
