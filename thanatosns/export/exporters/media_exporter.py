@@ -1,6 +1,5 @@
 import mimetypes
 from pathlib import Path
-from time import sleep
 from typing import Optional
 
 from django.conf import settings

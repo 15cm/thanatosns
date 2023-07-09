@@ -26,7 +26,7 @@ class Media(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                name="unique_media_per_post", fields=["url", "index", "post"]
+                name="unique_media_per_post", fields=["index", "post"]
             )
         ]
 

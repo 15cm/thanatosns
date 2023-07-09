@@ -13,7 +13,6 @@ LEASE_RENEW_INTERVAL_SECONDS = 10
 class RepeatTimer(Timer):
     def run(self):
         while not self.finished.wait(self.interval):
-            print("timer is triggered")
             self.function(*self.args, **self.kwargs)
 
 
