@@ -51,6 +51,11 @@ class MediaExporter(BaseExporter):
         self.should_populate_exif = should_populate_exif
         super().__init__(MEDIA_EXPORTER_ID)
 
+    def _export_path(self, post: Post) -> Path:
+        return (
+            self.root_dir / post.published_at.strftime("%Y/%m/%d") / f"post_{post.id}"
+        )
+
     def _process(self, post: Post):
         post_dir: Path = (
             self.root_dir / post.published_at.strftime("%Y/%m/%d") / f"post_{post.id}"

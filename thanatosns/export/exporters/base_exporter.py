@@ -55,9 +55,14 @@ class BaseExporter:
             export_status = export_statuses[0]
         export_status.is_exported = True
         export_status.exported_at = timezone.now()
+        export_status.export_path = self._export_path(post).as_posix()
         export_status.save()
         return ExportResult(success=True)
 
     @abstractmethod
     def _process(self, post: Post):
+        pass
+
+    @abstractmethod
+    def _export_path(self, post: Post) -> Path:
         pass
