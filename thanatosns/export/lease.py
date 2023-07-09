@@ -13,24 +13,21 @@ LEASE_RENEW_INTERVAL_SECONDS = 10
 class RepeatTimer(Timer):
     def run(self):
         while not self.finished.wait(self.interval):
+            print("timer is triggered")
             self.function(*self.args, **self.kwargs)
 
 
-def _renew(
-    lease_name: str,
-    extend_seconds=2 * LEASE_RENEW_INTERVAL_SECONDS,
-    at_seconds=time.time(),
-):
-    cache.set(lease_name, at_seconds + extend_seconds)
+def _renew(lease_name: str, extend_seconds=2 * LEASE_RENEW_INTERVAL_SECONDS):
+    cache.set(lease_name, int(time.time()) + extend_seconds)
 
 
 def is_valid(lease_name: str) -> bool:
-    now = time.time()
+    now = int(time.time())
     lease_expiration = cache.get(lease_name, 0)
     return now < lease_expiration
 
 
-def stop(lease_name: str):
+def release(lease_name: str):
     cache.set(lease_name, 0)
 
 

@@ -1,10 +1,10 @@
 import mimetypes
 from pathlib import Path
+from time import sleep
 from typing import Optional
 
 from django.conf import settings
 
-import celery
 from .base_exporter import BaseExporter
 from posts.models import Media, Post
 import requests
@@ -44,10 +44,10 @@ def _populate_exif(path: Path, post: Post):
 
 
 class MediaExporter(BaseExporter):
-    def __init__(self, task: celery.Task) -> None:
-        super().__init__(MEDIA_EXPORTER_ID, task)
+    def __init__(self) -> None:
+        super().__init__(MEDIA_EXPORTER_ID)
 
-    def _process_one(self, post: Post):
+    def _process(self, post: Post):
         post_dir: Path = (
             self.root_dir / post.published_at.strftime("%Y/%m/%d") / f"post_{post.id}"
         )
@@ -73,4 +73,6 @@ class MediaExporter(BaseExporter):
                 err_urls.append(media.url)
                 last_exception = e
         if last_exception:
-            raise MediaProcessException(f"for urls: {err_urls}") from last_exception
+            raise MediaProcessException(
+                f"Last error {last_exception}. For urls: {err_urls}"
+            )
