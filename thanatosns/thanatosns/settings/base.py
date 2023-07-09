@@ -5,11 +5,11 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 THANATOSNS_REDIS_URL = os.getenv("THANATOSNS_REDIS_URL", "redis://127.0.0.1:6379")
-THANATOSNS_POSTGRES_USER = os.getenv("THANATOSNS_POSTGRES_USER", "postgres")
-THANATOSNS_POSTGRES_PASSWORD = os.getenv("THANATOSNS_POSTGRES_PASSWORD", "postgres")
-THANATOSNS_POSTGRES_HOST = os.getenv("THANATOSNS_POSTGRES_HOST", "localhost")
-THANATOSNS_POSTGRES_PORT = os.getenv("THANATOSNS_POSTGRES_POST", "5432")
-THANATOSNS_POSTGRES_DB = os.getenv("THANATOSNS_POSTGRES_DB", "thanatosns")
+THANATOSNS_DB_HOST = os.getenv("THANATOSNS_DB_HOST", "localhost")
+THANATOSNS_DB_PORT = os.getenv("THANATOSNS_DB_POST", "5432")
+THANATOSNS_DB_USER = os.getenv("THANATOSNS_DB_USER", "postgres")
+THANATOSNS_DB_PASSWORD = os.getenv("THANATOSNS_DB_PASSWORD", "postgres")
+THANATOSNS_DB_NAME = os.getenv("THANATOSNS_DB_NAME", "thanatosns")
 THANATOSNS_EXPORT_DIR = os.getenv("THANATOSNS_EXPORT_DIR", "/tmp/thanatosns")
 THANATOSNS_MEDIA_CONTENT_TYPES = os.getenv(
     "THANATOSNS_MEDIA_CONTENT_TYPES",
@@ -110,11 +110,11 @@ ASGI_APPLICATION = "thanatosns.asgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": THANATOSNS_POSTGRES_DB,
-        "USER": THANATOSNS_POSTGRES_USER,
-        "PASSWORD": THANATOSNS_POSTGRES_PASSWORD,
-        "HOST": THANATOSNS_POSTGRES_HOST,
-        "PORT": THANATOSNS_POSTGRES_PORT,
+        "NAME": THANATOSNS_DB_NAME,
+        "USER": THANATOSNS_DB_USER,
+        "PASSWORD": THANATOSNS_DB_PASSWORD,
+        "HOST": THANATOSNS_DB_HOST,
+        "PORT": THANATOSNS_DB_PORT,
         "OPTIONS": {
             # The default timeout of psql, added for modification as required.
             "connect_timeout": 30

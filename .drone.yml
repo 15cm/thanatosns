@@ -1,0 +1,39 @@
+---
+kind: pipeline
+type: docker
+name: run-tests
+
+concurrency:
+  limit: 5
+
+environment:
+  THANATOSNS_REDIS_URL: redis://redis:6379
+  THANATOSNS_DB_HOST: db
+
+steps:
+  - name: test
+    image: python:3.10.12-slim-bullseye
+    commands:
+      - apt update
+      - apt install -y exiftool
+      - pip install pdm
+      - pdm install -G test
+      - cd thanatosns
+      - pdm run pytest
+
+services:
+  - name: redis
+    image: redis:7.0.11
+  - name: db
+    image: postgres:15.3
+    environment:
+      POSTGRES_PASSWORD: postgres
+
+trigger:
+  branch:
+    - main
+  event:
+    - push
+    - custom
+
+...
