@@ -57,9 +57,7 @@ class MediaExporter(BaseExporter):
         )
 
     def _process(self, post: Post):
-        post_dir: Path = (
-            self.root_dir / post.published_at.strftime("%Y/%m/%d") / f"post_{post.id}"
-        )
+        post_dir = self._export_path(post)
         post_dir.mkdir(parents=True, exist_ok=True)
         media: Media
         err_urls: list[str] = []
