@@ -7,4 +7,4 @@ SECRET_KEY = "django-insecure-yt0oh!cg9wr70@bb97p$bx$b^y9_1o=i=i+m*z=297*l+#!mf_
 DEBUG = True
 
 
-INSTALLED_APPS = ["daphne"] + INSTALLED_APPS + ["django_extensions"]
+INSTALLED_APPS = ["daphne"] + INSTALLED_APPS

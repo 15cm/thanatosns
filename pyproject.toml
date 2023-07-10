@@ -17,6 +17,7 @@ dependencies = [
     "flower>=2.0.0",
     "uvicorn[standard]>=0.22.0",
     "gunicorn>=20.1.0",
+    "django-extensions>=3.2.3",
 ]
 requires-python = ">=3.10"
 license = {text = "MIT"}
@@ -24,7 +25,6 @@ license = {text = "MIT"}
 [tool.pdm.dev-dependencies]
 dev = [
     "django-stubs>=4.2.3",
-    "django-extensions>=3.2.3",
     "daphne>=4.0.0",
 ]
 test = [

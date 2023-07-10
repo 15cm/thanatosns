@@ -1,0 +1,4 @@
+check_update = false
+
+[python]
+use_venv = false

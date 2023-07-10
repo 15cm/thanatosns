@@ -1,0 +1,7 @@
+**/staticfiles/
+**/__pycache__/
+**/__pypackages__/
+typings/
+pyrightconfig.json
+flake.*
+**/.envrc

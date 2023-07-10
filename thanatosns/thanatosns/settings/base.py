@@ -6,7 +6,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 THANATOSNS_REDIS_URL = os.getenv("THANATOSNS_REDIS_URL", "redis://127.0.0.1:6379")
 THANATOSNS_DB_HOST = os.getenv("THANATOSNS_DB_HOST", "localhost")
-THANATOSNS_DB_PORT = os.getenv("THANATOSNS_DB_POST", "5432")
+THANATOSNS_DB_PORT = os.getenv("THANATOSNS_DB_PORT", "5432")
 THANATOSNS_DB_USER = os.getenv("THANATOSNS_DB_USER", "postgres")
 THANATOSNS_DB_PASSWORD = os.getenv("THANATOSNS_DB_PASSWORD", "postgres")
 THANATOSNS_DB_NAME = os.getenv("THANATOSNS_DB_NAME", "thanatosns")
@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_extensions",
     "posts",
     "export",
 ]

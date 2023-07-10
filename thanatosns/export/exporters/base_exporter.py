@@ -4,7 +4,6 @@ from pathlib import Path
 from typing import Iterable, Optional
 from django.conf import settings
 from django.utils import timezone
-import celery
 from export.models import PostExportStatus
 
 from posts.models import Post

@@ -1,0 +1,3 @@
+#!/command/with-contenv sh
+cd /opt/thanatosns
+caddy run

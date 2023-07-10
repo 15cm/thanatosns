@@ -1,4 +1,4 @@
-from decorator import contextmanager
+from contextlib import contextmanager
 from ninja.schema import Schema
 from django.core.cache import cache
 from threading import Timer
