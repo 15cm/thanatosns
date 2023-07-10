@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   web:
-    image: thanatosns
+    image: 15cm/thanatosns
     restart: unless-stopped
     entrypoint: ["/init"]
     env_file:
@@ -14,7 +14,7 @@ services:
       - 3000:3000
 
   task-worker:
-    image: thanatosns
+    image: 15cm/thanatosns
     restart: unless-stopped
     command: pdm run celery -A thanatosns worker -l INFO
     env_file:
@@ -24,7 +24,7 @@ services:
       - db
 
   task-monitoring:
-    image: thanatosns
+    image: 15cm/thanatosns
     restart: unless-stopped
     command: pdm run celery --broker=redis://redis:6379/1 flower
     env_file:
@@ -36,7 +36,7 @@ services:
       - 5555:5555
 
   sh:
-    image: thanatosns
+    image: 15cm/thanatosns
     profiles: ["admin"]
     env_file:
       - ./docker-compose.env
