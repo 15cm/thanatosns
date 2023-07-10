@@ -10,10 +10,12 @@ services:
     depends_on:
       - redis
       - db
+    volumes:
+      - data-export:/data/thanatosns/export
     ports:
       - 3000:3000
 
-  task-worker:
+  celery:
     image: 15cm/thanatosns
     restart: unless-stopped
     command: pdm run celery -A thanatosns worker -l INFO
@@ -22,8 +24,10 @@ services:
     depends_on:
       - redis
       - db
+    volumes:
+      - data-export:/data/thanatosns/export
 
-  task-monitoring:
+  flower:
     image: 15cm/thanatosns
     restart: unless-stopped
     command: pdm run celery --broker=redis://redis:6379/1 flower
@@ -58,3 +62,10 @@ services:
     environment:
       - POSTGRES_PASSWORD=postgres
 
+volumes:
+  data-export:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /tmp/thanatosns
