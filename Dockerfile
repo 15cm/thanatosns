@@ -37,5 +37,5 @@ WORKDIR /opt/thanatosns/thanatosns
 RUN pdm run manage.py collectstatic
 
 ENTRYPOINT ["/tini", "--"]
-EXPOSE 3000
+EXPOSE 3000 5555
 VOLUME /data/thanatosns/export
