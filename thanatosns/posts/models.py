@@ -47,10 +47,9 @@ class Media(models.Model):
 
 
 class Author(models.Model):
-    name = models.CharField(max_length=255)
-    # TODO: Support author profiles to use the fields below.
-    other_names = ArrayField(models.CharField(max_length=255), null=True, blank=True)
+    handle = models.CharField(max_length=255, unique=True)
+    names = ArrayField(models.CharField(max_length=255), null=True, blank=True)
     urls = ArrayField(models.CharField(max_length=255), null=True, blank=True)
 
     class Meta:
-        indexes = [GinIndex(fields=["other_names"])]
+        indexes = [GinIndex(fields=["names"])]

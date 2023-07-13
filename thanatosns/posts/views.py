@@ -9,6 +9,7 @@ from asgiref.sync import sync_to_async
 
 from posts.models import Author, Media, Post
 from django.shortcuts import get_object_or_404
+from annoying.functions import get_object_or_None
 
 
 router = Router()
@@ -22,7 +23,7 @@ def aget_object_or_404(*kargs, **kwargs):
 class AuthorIn(ModelSchema):
     class Config:
         model = Author
-        model_exclude = ["id", "other_names", "urls"]
+        model_exclude = ["id"]
 
 
 class MediaIn(ModelSchema):
@@ -44,7 +45,7 @@ class PostIn(ModelSchema):
 class AuthorOut(ModelSchema):
     class Config:
         model = Author
-        model_exclude = ["other_names", "urls"]
+        model_fields = "__all__"
 
 
 class MediaOut(ModelSchema):
@@ -62,7 +63,10 @@ class PostOut(ModelSchema):
         model_exclude = ["metadata"]
 
 
-@router.post("/")
+@router.post(
+    "/",
+    description="Create a post. The author is identified by the `handle` field. Other author information is only honored when the author is first created.",
+)
 async def create_post(request, payload: PostIn):
     payload_dict = payload.dict()
     media_payloads = payload_dict.pop("medias")
@@ -74,7 +78,9 @@ async def create_post(request, payload: PostIn):
         post = Post.objects.create(**payload_dict)
         for media_payload in media_payloads:
             media = Media.objects.create(**media_payload, post=post)
-        (author, _) = Author.objects.get_or_create(name=author_payload["name"])
+        author = get_object_or_None(Author, handle=author_payload["handle"])
+        if author is None:
+            author = Author.objects.create(**author_payload)
         post.author = author
         post.save()
         return post

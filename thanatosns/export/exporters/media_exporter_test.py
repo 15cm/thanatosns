@@ -24,7 +24,7 @@ def unexported_post(db):
 def post_model_payload_1():
     return {
         "id": 1,
-        "url": "https://twitter/1",
+        "url": "https://twitter/1/status/1",
         "platform": "twitter",
         "title": "hello",
         "body": "world",
@@ -43,7 +43,9 @@ def post_model_payload_1():
         ],
         "author": {
             "id": 1,
-            "name": "John",
+            "handle": "abc",
+            "names": ["Jack"],
+            "urls": ["https://twitter/1"],
         },
     }
 

@@ -62,7 +62,7 @@ def merge_dict_to_model(payload: dict[str, Any], obj: models.Model):
 def post_model_payload_1():
     return {
         "id": 1,
-        "url": "https://twitter/1",
+        "url": "https://twitter/1/status/1",
         "platform": "twitter",
         "title": "hello",
         "body": "world",
@@ -81,7 +81,9 @@ def post_model_payload_1():
         ],
         "author": {
             "id": 1,
-            "name": "John",
+            "handle": "abc",
+            "names": ["Jack"],
+            "urls": ["https://twitter/1"],
         },
     }
 
@@ -109,7 +111,7 @@ async def test_create(
     ) == PostOut(
         **{
             "id": 1,
-            "url": "https://twitter/1",
+            "url": "https://twitter/1/status/1",
             "platform": "twitter",
             "title": "hello",
             "body": "world",
@@ -126,7 +128,12 @@ async def test_create(
                     "index": 1,
                 },
             ],
-            "author": {"id": 1, "name": "John"},
+            "author": {
+                "id": 1,
+                "handle": "abc",
+                "names": ["Jack"],
+                "urls": ["https://twitter/1"],
+            },
         }
     )
 
@@ -138,7 +145,7 @@ async def test_get(async_client: TestAsyncClient, post_1):
     assert get_repsonse.status_code == 200
     assert get_repsonse.json() == {
         "id": 1,
-        "url": "https://twitter/1",
+        "url": "https://twitter/1/status/1",
         "platform": "twitter",
         "title": "hello",
         "body": "world",
@@ -155,7 +162,12 @@ async def test_get(async_client: TestAsyncClient, post_1):
                 "index": 1,
             },
         ],
-        "author": {"id": 1, "name": "John"},
+        "author": {
+            "id": 1,
+            "handle": "abc",
+            "names": ["Jack"],
+            "urls": ["https://twitter/1"],
+        },
     }
 
 
@@ -168,7 +180,7 @@ def test_list(client: TestClient, post_1):
         "items": [
             {
                 "id": 1,
-                "url": "https://twitter/1",
+                "url": "https://twitter/1/status/1",
                 "platform": "twitter",
                 "title": "hello",
                 "body": "world",
@@ -185,7 +197,12 @@ def test_list(client: TestClient, post_1):
                         "index": 1,
                     },
                 ],
-                "author": {"id": 1, "name": "John"},
+                "author": {
+                    "id": 1,
+                    "handle": "abc",
+                    "names": ["Jack"],
+                    "urls": ["https://twitter/1"],
+                },
             }
         ],
     }
@@ -200,7 +217,7 @@ def test_list_filter_found(client: TestClient, post_1):
         "items": [
             {
                 "id": 1,
-                "url": "https://twitter/1",
+                "url": "https://twitter/1/status/1",
                 "platform": "twitter",
                 "title": "hello",
                 "body": "world",
@@ -217,7 +234,12 @@ def test_list_filter_found(client: TestClient, post_1):
                         "index": 1,
                     },
                 ],
-                "author": {"id": 1, "name": "John"},
+                "author": {
+                    "id": 1,
+                    "handle": "abc",
+                    "names": ["Jack"],
+                    "urls": ["https://twitter/1"],
+                },
             }
         ],
     }
