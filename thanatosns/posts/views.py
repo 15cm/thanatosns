@@ -34,7 +34,7 @@ class MediaIn(ModelSchema):
 
 
 class PostIn(ModelSchema):
-    medias: Optional[list[MediaIn]]
+    medias: list[MediaIn] = []
     author: AuthorIn
     metadata: Optional[dict] = None
 
@@ -57,7 +57,7 @@ class MediaOut(ModelSchema):
 
 class PostOut(ModelSchema):
     medias: list[MediaOut]
-    author: Optional[AuthorOut]
+    author: Optional[AuthorOut] = None
 
     class Config:
         model = Post
@@ -91,7 +91,7 @@ async def create_post(request, payload: PostIn):
     def create_object() -> Post:
         post = Post.objects.create(**payload_dict)
         for media_payload in media_payloads:
-            media = Media.objects.create(**media_payload, post=post)
+            Media.objects.create(**media_payload, post=post)
         (author, is_created) = Author.objects.get_or_create(
             handle=author_payload["handle"]
         )
@@ -124,8 +124,8 @@ async def get_post(request, post_id: int):
 
 
 class PostFilterSchema(FilterSchema):
-    url: Optional[str]
-    platform: Optional[str]
+    url: Optional[str] = None
+    platform: Optional[str] = None
     search: Optional[str] = Field(q=["title__icontains", "body__icontains"])
     author_name: Optional[str] = Field(q=["authors__name__icontains"])
 
