@@ -11,14 +11,11 @@ from ninja.schema import Schema
 import logging
 import posts
 
-
 logger = logging.getLogger(__name__)
 
 
 class ExportResult(Schema):
-    success: bool
-    error_message: Optional[str] = None
-    export_path: Optional[str] = None
+    export_path: str
 
 
 class BaseExporter:
@@ -32,17 +29,8 @@ class BaseExporter:
     def export(self, post: Post):
         self.root_dir.mkdir(parents=True, exist_ok=True)
         if not os.access(self.root_dir, os.W_OK):
-            error_message = f"No write access to {self.root_dir}"
-            logger.error(error_message)
-            return ExportResult(
-                success=False,
-                error_message=error_message,
-            )
-        try:
-            self._process(post)
-        except Exception as e:
-            logger.error(e)
-            return ExportResult(success=False, error_message=str(e))
+            raise PermissionError(f"No write access to {self.root_dir}")
+        self._process(post)
         export_statuses = list(post.export_statuses.all())
         export_status: PostExportStatus
         if len(export_statuses) == 0:
@@ -58,7 +46,7 @@ class BaseExporter:
         export_status.exported_at = timezone.now()
         export_status.export_path = export_path
         export_status.save()
-        return ExportResult(success=True, export_path=export_path)
+        return ExportResult(export_path=export_path)
 
     @abstractmethod
     def _process(self, post: Post):

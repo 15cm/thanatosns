@@ -100,7 +100,6 @@ def test_export(fs_patched, media_exporter: MediaExporter, post_1: Post):
             result = media_exporter.export(post_1)
         except Exception as e:
             assert False, f"Should not raise exception {e}"
-    assert result.success
     assert Path(
         f"{settings.THANATOSNS_EXPORT_DIR}/{media_exporter.exporter_id}/2023/07/04/post_1/media_0_id_1.jpg"
     ).exists()
