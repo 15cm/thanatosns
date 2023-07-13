@@ -1,9 +1,9 @@
 from typing import Any, Optional
 from django.db.models.query import Prefetch, QuerySet
-from export.views import DetailResponse
 from ninja import ModelSchema, Query, Schema, Router
 from django.db import transaction, IntegrityError
 from ninja import FilterSchema, Field
+from ninja.errors import HttpError
 from ninja.pagination import paginate
 from asgiref.sync import sync_to_async
 
@@ -76,10 +76,7 @@ def assign_to_obj(obj: Any, payload: dict[str, Any]):
 @router.post(
     "/",
     description="Create a post. The author is identified by the `handle` field. Other author information is only honored when the author is first created.",
-    response={
-        200: CreatePostOut,
-        409: DetailResponse,
-    },
+    response=CreatePostOut,
 )
 async def create_post(request, payload: PostIn):
     payload_dict = payload.dict()
@@ -105,7 +102,7 @@ async def create_post(request, payload: PostIn):
     try:
         post = await create_object()
     except IntegrityError as e:
-        return (409, DetailResponse(detail=str(e)))
+        raise HttpError(409, str(e))
     return CreatePostOut(id=post.id)
 
 

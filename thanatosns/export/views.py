@@ -1,5 +1,8 @@
 import threading
+
+from django.http.response import HttpResponse
 from ninja import Router
+from ninja.errors import HttpError
 from ninja.schema import Schema
 from .tasks import (
     export_medias_task,
@@ -22,10 +25,6 @@ MEDIA_TASK_LEASE_NAME = f"{MEDIA_EXPORTER_ID}_task_lease"
 class StartMediaExportIn(Schema):
     # Export medias for exported posts as well.
     export_all: bool = False
-
-
-class DetailResponse(Schema):
-    detail: str
 
 
 def background_media_export_cleanup():
@@ -59,26 +58,22 @@ def background_media_export(input: StartMediaExportIn):
 
 
 # Only one export can run at a time.
-@router.post("/media", response={200: DetailResponse, 409: DetailResponse})
+@router.post("/media")
 def start_media_export_task(request, payload: StartMediaExportIn):
     if not lease.acquire(MEDIA_TASK_LEASE_NAME):
-        return 409, DetailResponse(
-            detail="The current media export task is still running."
-        )
+        raise HttpError(409, "The current media export task is still running.")
     background_thread = threading.Thread(
         target=background_media_export, args=(payload,), daemon=True
     )
     background_thread.start()
-    return DetailResponse(detail="Succeeded.")
 
 
-@router.delete("/media/{task_id}", response=DetailResponse)
+@router.delete("/media/{task_id}")
 def delete_media_export_task(request, task_id: str):
     celery_app.control.revoke(task_id, terminate=True)
-    return DetailResponse(detail=f"Succeeded.")
 
 
-@router.delete("/media", response=DetailResponse)
+@router.delete("/media")
 def delete_all_media_export_task(request):
     task_ids = []
     inspect = celery_app.control.inspect()
@@ -89,4 +84,3 @@ def delete_all_media_export_task(request):
                     task_ids.append(task["id"])
     for task_id in task_ids:
         celery_app.control.revoke(task_id, terminate=True)
-    return DetailResponse(detail=f"Succeeded. {len(task_ids)} deleted.")
