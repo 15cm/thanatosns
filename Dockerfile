@@ -29,7 +29,7 @@ WORKDIR /opt/thanatosns
 RUN rm -rf /tmp/caddy /tmp/s6-overlay-noarch.tar.xz /tmp/s6-overlay-x86_64.tar.xz
 COPY ./deployment/s6-overlay /etc/services.d
 
-ENV DJANGO_SETTINGS_MODULE=thanatosns.settings.prod
+ENV DJANGO_SETTINGS_MODULE=thanatosns.settings.production
 
 COPY . /opt/thanatosns
 RUN mv ./deployment/* ./ && rm -rf ./deployment
