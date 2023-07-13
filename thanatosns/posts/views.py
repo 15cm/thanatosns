@@ -1,8 +1,8 @@
-from typing import Optional
+from typing import Any, Optional
 from django.db.models.query import Prefetch, QuerySet
-from ninja import Router
-from ninja import ModelSchema, Query
-from django.db import transaction
+from export.views import DetailResponse
+from ninja import ModelSchema, Query, Schema, Router
+from django.db import transaction, IntegrityError
 from ninja import FilterSchema, Field
 from ninja.pagination import paginate
 from asgiref.sync import sync_to_async
@@ -10,6 +10,7 @@ from asgiref.sync import sync_to_async
 from posts.models import Author, Media, Post
 from django.shortcuts import get_object_or_404
 from annoying.functions import get_object_or_None
+from pydantic.errors import IntegerError
 
 
 router = Router()
@@ -63,9 +64,22 @@ class PostOut(ModelSchema):
         model_exclude = ["metadata"]
 
 
+class CreatePostOut(Schema):
+    id: int
+
+
+def assign_to_obj(obj: Any, payload: dict[str, Any]):
+    for k, v in payload.items():
+        setattr(obj, k, v)
+
+
 @router.post(
     "/",
     description="Create a post. The author is identified by the `handle` field. Other author information is only honored when the author is first created.",
+    response={
+        200: CreatePostOut,
+        409: DetailResponse,
+    },
 )
 async def create_post(request, payload: PostIn):
     payload_dict = payload.dict()
@@ -78,15 +92,21 @@ async def create_post(request, payload: PostIn):
         post = Post.objects.create(**payload_dict)
         for media_payload in media_payloads:
             media = Media.objects.create(**media_payload, post=post)
-        author = get_object_or_None(Author, handle=author_payload["handle"])
-        if author is None:
-            author = Author.objects.create(**author_payload)
+        (author, is_created) = Author.objects.get_or_create(
+            handle=author_payload["handle"]
+        )
+        if is_created:
+            assign_to_obj(author, author_payload)
+            author.save()
         post.author = author
         post.save()
         return post
 
-    post = await create_object()
-    return {"id": post.id}
+    try:
+        post = await create_object()
+    except IntegrityError as e:
+        return (409, DetailResponse(detail=str(e)))
+    return CreatePostOut(id=post.id)
 
 
 def post_prefetch_relationships(qs: QuerySet[Post]) -> QuerySet[Post]:
