@@ -34,7 +34,7 @@ class MediaIn(ModelSchema):
 
 
 class PostIn(ModelSchema):
-    medias: list[MediaIn]
+    medias: Optional[list[MediaIn]]
     author: AuthorIn
     metadata: Optional[dict] = None
 
@@ -83,7 +83,7 @@ def assign_to_obj(obj: Any, payload: dict[str, Any]):
 )
 async def create_post(request, payload: PostIn):
     payload_dict = payload.dict()
-    media_payloads = payload_dict.pop("medias")
+    media_payloads = payload_dict.pop("medias") if "medias" in payload_dict else []
     author_payload = payload_dict.pop("author")
 
     @sync_to_async
