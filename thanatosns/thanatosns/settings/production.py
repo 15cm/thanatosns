@@ -12,13 +12,14 @@ if host_url := os.getenv("THANATOSNS_HOST_URL", None):
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
+    "formatters": {
+        "normal": {"format": ("[%(asctime)s] [%(levelname)s] %(message)s")},
+    },
     "handlers": {
-        "console": {
-            "class": "logging.StreamHandler",
-        },
+        "console": {"class": "logging.StreamHandler", "formatter": "normal"},
     },
     "root": {
         "handlers": ["console"],
-        "level": "WARNING",
+        "level": os.getenv("LOG_LEVEL", "INFO"),
     },
 }
