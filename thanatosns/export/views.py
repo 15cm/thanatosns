@@ -25,6 +25,7 @@ MEDIA_TASK_LEASE_NAME = f"{MEDIA_EXPORTER_ID}_task_lease"
 class StartMediaExportIn(Schema):
     # Export medias for exported posts as well.
     export_all: bool = False
+    disable_media_download: bool = False
 
 
 def background_media_export_cleanup():
@@ -47,7 +48,7 @@ def background_media_export(input: StartMediaExportIn):
             )
         task_group = celery.group(
             [
-                export_medias_task.s(post_id)
+                export_medias_task.s(post_id, input.disable_media_download)
                 for post_id in posts_to_export.values_list("id", flat=True)
             ]
         )

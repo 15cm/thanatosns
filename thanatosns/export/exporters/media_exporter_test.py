@@ -2,7 +2,11 @@ from pathlib import Path
 from unittest import mock
 from django.conf import settings
 from export.exporters.base_exporter import ExportResult
-from export.exporters.media_exporter import MediaExporter, MEDIA_EXPORTER_ID
+from export.exporters.media_exporter import (
+    MediaExporter,
+    MEDIA_EXPORTER_ID,
+    MediaExporterOptions,
+)
 from export.models import PostExportStatus
 from posts.models import Post
 import pytest
@@ -12,7 +16,7 @@ import requests_mock
 
 @pytest.fixture
 def media_exporter(fs_patched):
-    return MediaExporter(should_populate_exif=False)
+    return MediaExporter(MediaExporterOptions(disable_exif_population=True))
 
 
 @pytest.fixture
