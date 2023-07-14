@@ -15,8 +15,8 @@ THANATOSNS_MEDIA_CONTENT_TYPES = os.getenv(
     "THANATOSNS_MEDIA_CONTENT_TYPES",
     "image/jpeg,image/png,image/gif,image/webp,video/mpeg,video/mp4,video/webm",
 ).split(",")
-THANATOSNS_CELERY_WORKER_CONCURRENCY = os.getenv(
-    "THANATOSNS_CELERY_WORKER_CONCURRENCY", 8
+THANATOSNS_CELERY_WORKER_CONCURRENCY = int(
+    os.getenv("THANATOSNS_CELERY_WORKER_CONCURRENCY", 8)
 )
 
 
