@@ -33,7 +33,7 @@ def _populate_exif(path: Path, post: Post):
                 "Description": post.body,
                 "UserComment": post.url,
             }
-            | ({"Artist": post.author} if post.author else {}),
+            | ({"Artist": post.author.handle} if post.author else {}),
             params=[
                 "-P",
                 "-overwrite_original",
