@@ -24,18 +24,22 @@ class MediaProcessException(Exception):
     pass
 
 
+def _extract_exif_tags(post: Post) -> dict[str, str]:
+    # The text fields must be sanitized. Newlines doesn't work with pyexiftool.
+    return {
+        "DateTimeOriginal": post.published_at.strftime("%Y:%m:%d %H:%M:%S%z"),
+        "Title": post.title.replace("\n", " "),
+        "Subject": post.platform,
+        "Description": post.body.replace("\n", " "),
+        "UserComment": post.url,
+    } | ({"Artist": post.author.handle} if post.author else {})
+
+
 def _populate_exif(path: Path, post: Post):
     with ExifToolHelper() as et:
         et.set_tags(
             [path],
-            tags={
-                "DateTimeOriginal": post.published_at.strftime("%Y:%m:%d %H:%M:%S%z"),
-                "Title": post.title,
-                "Subject": post.platform,
-                "Description": post.body,
-                "UserComment": post.url,
-            }
-            | ({"Artist": post.author.handle} if post.author else {}),
+            tags=_extract_exif_tags(post),
             params=[
                 "-P",
                 "-overwrite_original",
