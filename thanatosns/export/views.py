@@ -86,7 +86,9 @@ def background_media_export(input: StartMediaExportIn):
         try:
             result = task_group.apply_async()
             cache.set(MEDIA_TASK_ID_NAME, result.id)
-            result.join_native(timeout=settings.THANATOSNS_MEDIA_EXPORT_TIMEOUT)
+            result.join_native(
+                propagate=False, timeout=settings.THANATOSNS_MEDIA_EXPORT_TIMEOUT
+            )
             logger.info("Media export task finished")
         except Exception as e:
             logger.error(f"Media export task failed: {e}")
