@@ -22,7 +22,7 @@ def _renew(lease_name: str, extend_seconds=2 * LEASE_RENEW_INTERVAL_SECONDS):
 
 def is_valid(lease_name: str) -> bool:
     now = int(time.time())
-    lease_expiration = cache.get(lease_name, 0)
+    lease_expiration = int(cache.get(lease_name, 0))
     return now < lease_expiration
 
 

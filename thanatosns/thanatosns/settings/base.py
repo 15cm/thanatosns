@@ -1,8 +1,15 @@
 from pathlib import Path
 import os
+from typing import Optional
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
+
+
+def _get_int_env(name: str, default=None) -> Optional[int]:
+    val = os.getenv(name)
+    return int(val) if val else default
+
 
 THANATOSNS_REDIS_URL = os.getenv("THANATOSNS_REDIS_URL", "redis://127.0.0.1:6379")
 THANATOSNS_DB_HOST = os.getenv("THANATOSNS_DB_HOST", "localhost")
@@ -15,8 +22,12 @@ THANATOSNS_MEDIA_CONTENT_TYPES = os.getenv(
     "THANATOSNS_MEDIA_CONTENT_TYPES",
     "image/jpeg,image/png,image/gif,image/webp,video/mpeg,video/mp4,video/webm",
 ).split(",")
-THANATOSNS_CELERY_WORKER_CONCURRENCY = int(
-    os.getenv("THANATOSNS_CELERY_WORKER_CONCURRENCY", 8)
+THANATOSNS_MEDIA_EXPORT_TIMEOUT = _get_int_env("THANATOSNS_MEDIA_EXPORT_TIMEOUT")
+THANATOSNS_CELERY_TASK_TIME_LIMIT = _get_int_env(
+    "THANATOSNS_CELERY_TASK_TIME_LIMIT", 10 * 60
+)
+THANATOSNS_CELERY_WORKER_CONCURRENCY = _get_int_env(
+    "THANATOSNS_CELERY_WORKER_CONCURRENCY", 8
 )
 
 
@@ -134,7 +145,7 @@ CACHES = {
 
 CELERY_TIMEZONE = "UTC"
 CELERY_TASK_TRACK_STARTED = True
-CELERY_TASK_TIME_LIMIT = 120 * 60
+CELERY_TASK_TIME_LIMIT = THANATOSNS_CELERY_TASK_TIME_LIMIT
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 CELERY_WORKER_CONCURRENCY = THANATOSNS_CELERY_WORKER_CONCURRENCY
 CELERY_BROKER_URL = f"{THANATOSNS_REDIS_URL}/1"

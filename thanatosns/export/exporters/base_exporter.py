@@ -9,7 +9,6 @@ from export.models import PostExportStatus
 from posts.models import Post
 from ninja.schema import Schema
 import logging
-import posts
 
 logger = logging.getLogger(__name__)
 
